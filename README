@@ -1,0 +1,10 @@
+human is a PHP extension for converting time intervals into human-readable formats.
+
+human was mostly written as an exercise, but if someone wants to use it, they are welcome to. I will eventually make it a pecl package (once again, for exercise)
+
+see human.php for usage examples
+
+Functions:
+
+human_interval_precise($seconds)
+breaks the given number of seconds up into largest precise unit possible (i.e. the largest unit you can get to is weeks, since months vary in length)
