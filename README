@@ -8,3 +8,6 @@ Functions:
 
 human_interval_precise($seconds)
 breaks the given number of seconds up into largest precise unit possible (i.e. the largest unit you can get to is weeks, since months vary in length)
+
+human_interval($seconds)
+returns the interval in the largest sensible units
