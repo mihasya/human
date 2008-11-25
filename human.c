@@ -14,7 +14,6 @@
   +----------------------------------------------------------------------+
   | Author:	Mikhail Panchenko <m@mihasya.com>							|
   +----------------------------------------------------------------------+
-@todo: add larger units to time_interval (months, years, decades etc)
 */
 
 /* $Id: header,v 1.16.2.1.2.1 2007/01/01 19:32:09 iliaa Exp $ */
@@ -209,15 +208,18 @@ PHP_FUNCTION(human_interval) {
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &seconds) == FAILURE) {
 		RETURN_NULL();
 	}
-	
-	if (seconds >= SEC_IN_WEEK) {
+	if (seconds >= SEC_IN_YEAR) {
+		sprintf(retstr, "%dy", seconds/SEC_IN_YEAR);
+	} else if (seconds >= SEC_IN_MONTH) {
+		sprintf(retstr, "%dmon", seconds/SEC_IN_MONTH);
+	} else if (seconds >= SEC_IN_WEEK) {
 		sprintf(retstr, "%dw", seconds/SEC_IN_WEEK);
 	} else if (seconds >= SEC_IN_DAY) {
 		sprintf(retstr, "%dd", seconds/SEC_IN_DAY);
 	} else if (seconds >= SEC_IN_HOUR) {
 		sprintf(retstr, "%dh", seconds/SEC_IN_HOUR);
 	} else {
-		sprintf(retstr, "%dm", seconds/SEC_IN_MIN);
+		sprintf(retstr, "%dmin", seconds/SEC_IN_MIN);
 	}
 		
 	RETURN_STRING(retstr, 1);
