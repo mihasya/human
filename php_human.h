@@ -41,6 +41,7 @@ PHP_RSHUTDOWN_FUNCTION(human);
 PHP_MINFO_FUNCTION(human);
 
 PHP_FUNCTION(human_interval_precise);
+PHP_FUNCTION(human_interval);
 /* 
   	Declare any global variables you may need between the BEGIN
 	and END macros here:     

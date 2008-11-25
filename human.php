@@ -10,7 +10,11 @@ $seconds = array(
     '1d 1m 2s' => 3600*24 + 62,
 );
 foreach ($seconds as $k=>$v) {
-    $human = human_interval_precise($v);
-    echo "$k : $human\n";
+    $human_prec = human_interval_precise($v);
+    $human = human_interval($v);
+    echo "$k : $human_prec : $human \n";
+
 }
+
+
 ?>

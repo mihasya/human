@@ -21,7 +21,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <string.h>
+#include <math.h>
 #include "php.h"
 #include "php_ini.h"
 #include "ext/standard/info.h"
@@ -40,6 +40,7 @@ static int le_human;
  */
 zend_function_entry human_functions[] = {
 	PHP_FE(human_interval_precise, NULL)
+	PHP_FE(human_interval, NULL)
 	{NULL, NULL, NULL}	/* Must be the last line in human_functions[] */
 };
 /* }}} */
@@ -202,7 +203,42 @@ PHP_FUNCTION(human_interval_precise)
 	RETURN_STRING(retstr, 1);
 } /*}}}*/
 
-
+/*{{{ return the approximation of the interval in the largest sensible unit
+@todo: add a ~ if the fraction isn't exact, leave it off otherwise
+@todo: add a +/- where appropriate
+@todo: make the above optional
+*/
+PHP_FUNCTION(human_interval) { 
+	
+	long seconds, num;
+	
+	//deckare constants used in calculation
+	const float sec_in_week = 604800;
+	const float sec_in_day = 86400;
+	const float sec_in_hour = 3600;
+	const float sec_in_min = 60;
+	
+	float frac;
+	char retstr[60];
+	*retstr = 0;
+	
+	//grab parameter
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &seconds) == FAILURE) {
+		RETURN_NULL();
+	}
+	
+	if ((num = round(seconds/sec_in_week))>0) {
+		sprintf(retstr, "%dw", num);
+	} else if ((num = round(seconds/sec_in_day))>0) {
+		sprintf(retstr, "%dd", num);
+	} else if ((num = round(seconds/sec_in_hour))>0) {
+		sprintf(retstr, "%dh", num);
+	} else if ((num = round(seconds/sec_in_min))>0) {
+		sprintf(retstr, "%dm", num);
+	}
+	
+	RETURN_STRING(retstr, 1);
+} /*}}}*/
 /*
  * Local variables:
  * tab-width: 4
