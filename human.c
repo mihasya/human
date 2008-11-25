@@ -204,9 +204,6 @@ PHP_FUNCTION(human_interval_precise)
 } /*}}}*/
 
 /*{{{ return the approximation of the interval in the largest sensible unit
-@todo: add a ~ if the fraction isn't exact, leave it off otherwise
-@todo: add a +/- where appropriate
-@todo: make the above optional
 */
 PHP_FUNCTION(human_interval) { 
 	
