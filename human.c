@@ -12,8 +12,9 @@
   | obtain it through the world-wide-web, please send a note to		  |
   | license@php.net so we can mail you a copy immediately.			   |
   +----------------------------------------------------------------------+
-  | Author:															  |
+  | Author:	Mikhail Panchenko <m@mihasya.com>							|
   +----------------------------------------------------------------------+
+@todo: add larger units to time_interval (months, years, decades etc)
 */
 
 /* $Id: header,v 1.16.2.1.2.1 2007/01/01 19:32:09 iliaa Exp $ */
@@ -26,6 +27,14 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_human.h"
+
+/* CONSTANTS */
+#define SEC_IN_YEAR 	31449600
+#define SEC_IN_MONTH 	2592000
+#define SEC_IN_WEEK 	604800
+#define SEC_IN_DAY 		86400
+#define SEC_IN_HOUR 	3600
+#define SEC_IN_MIN 		60
 
 /* If you declare any globals in php_human.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(human)
@@ -147,22 +156,10 @@ PHP_MINFO_FUNCTION(human)
 /*{{{ function to convert a number of seconds into an interval
 */
 PHP_FUNCTION(human_interval_precise)
-{
-	//declare variables
-	unsigned long weeks;
-	unsigned long days;
-	unsigned long hours;
-	unsigned long minutes;
-	unsigned long seconds;
-	
-	//deckare constants used in calculation
-	const unsigned long sec_in_week = 604800;
-	const unsigned long sec_in_day = 86400;
-	const unsigned long sec_in_hour = 3600;
-	const unsigned long sec_in_min = 60;
-	
-	//declare and zero out the return string
+{	
+	long seconds;
 	char retstr[60];
+	
 	*retstr = 0;
 	
 	//grab parameter
@@ -171,25 +168,21 @@ PHP_FUNCTION(human_interval_precise)
 	}
 	
 	//logic
-	weeks = seconds/sec_in_week;
-	if (weeks > 0) {
-		seconds = seconds%sec_in_week;
-		sprintf(retstr+strlen(retstr), "%dw ", weeks);
+	if (seconds >= SEC_IN_WEEK) {
+		sprintf(retstr+strlen(retstr), "%dw ", seconds/SEC_IN_WEEK);
+		seconds = seconds%SEC_IN_WEEK;
 	}
-	days = seconds/sec_in_day;
-	if (days > 0) {
-		seconds = seconds%sec_in_day;
-		sprintf(retstr+strlen(retstr), "%dd ", days);
+	if (seconds >= SEC_IN_DAY) {		
+		sprintf(retstr+strlen(retstr), "%dd ", seconds/SEC_IN_DAY);
+		seconds = seconds%SEC_IN_DAY;
 	}
-	hours = seconds/sec_in_hour;
-	if (hours > 0) {
-		seconds = seconds%sec_in_hour;
-		sprintf(retstr+strlen(retstr), "%dh ", hours);
+	if (seconds >= SEC_IN_HOUR) {
+		sprintf(retstr+strlen(retstr), "%dh ", seconds/SEC_IN_HOUR);
+		seconds = seconds%SEC_IN_HOUR;
 	}
-	minutes = seconds/sec_in_min;
-	if (minutes > 0) {
-		seconds = seconds%sec_in_min;
-		sprintf(retstr+strlen(retstr), "%dm ", minutes);
+	if (seconds >= SEC_IN_MIN) {
+		sprintf(retstr+strlen(retstr), "%dm ", seconds/SEC_IN_MIN);
+		seconds = seconds%SEC_IN_MIN;
 	}
 	if (seconds > 0) {
 		sprintf(retstr+strlen(retstr), "%ds", seconds);
@@ -207,16 +200,9 @@ PHP_FUNCTION(human_interval_precise)
 */
 PHP_FUNCTION(human_interval) { 
 	
-	long seconds, num;
-	
-	//deckare constants used in calculation
-	const float sec_in_week = 604800;
-	const float sec_in_day = 86400;
-	const float sec_in_hour = 3600;
-	const float sec_in_min = 60;
-	
-	float frac;
+	long seconds;
 	char retstr[60];
+	
 	*retstr = 0;
 	
 	//grab parameter
@@ -224,16 +210,16 @@ PHP_FUNCTION(human_interval) {
 		RETURN_NULL();
 	}
 	
-	if ((num = round(seconds/sec_in_week))>0) {
-		sprintf(retstr, "%dw", num);
-	} else if ((num = round(seconds/sec_in_day))>0) {
-		sprintf(retstr, "%dd", num);
-	} else if ((num = round(seconds/sec_in_hour))>0) {
-		sprintf(retstr, "%dh", num);
-	} else if ((num = round(seconds/sec_in_min))>0) {
-		sprintf(retstr, "%dm", num);
+	if (seconds >= SEC_IN_WEEK) {
+		sprintf(retstr, "%dw", seconds/SEC_IN_WEEK);
+	} else if (seconds >= SEC_IN_DAY) {
+		sprintf(retstr, "%dd", seconds/SEC_IN_DAY);
+	} else if (seconds >= SEC_IN_HOUR) {
+		sprintf(retstr, "%dh", seconds/SEC_IN_HOUR);
+	} else {
+		sprintf(retstr, "%dm", seconds/SEC_IN_MIN);
 	}
-	
+		
 	RETURN_STRING(retstr, 1);
 } /*}}}*/
 /*
